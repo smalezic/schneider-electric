@@ -6,11 +6,14 @@ using SchneiderElectric.Minefield.Host.Presentation;
 
 public static class BoardInstantiator
 {
-    public static IServiceProvider Initialize(this IServiceCollection services, int boardSize)
+    public static IServiceProvider Initialize(
+        this IServiceCollection services,
+        int boardSize,
+        int numberOfMines)
     {
         services.AddSingleton<IBoardRenderer, ConsoleBoardRenderer>();
         services.AddTransient<IBoard>(provider =>
-            Board.Create(provider.GetRequiredService<IBoardRenderer>(), boardSize));
+            Board.Create(provider.GetRequiredService<IBoardRenderer>(), boardSize, numberOfMines));
 
         return services.BuildServiceProvider();
     }

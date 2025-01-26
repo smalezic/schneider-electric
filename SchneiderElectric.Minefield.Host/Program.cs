@@ -1,16 +1,21 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿namespace SchneiderElectric.Minefield.Host;
+
+using Microsoft.Extensions.DependencyInjection;
 using SchneiderElectric.Minefield.Host.Entities;
 using SchneiderElectric.Minefield.Host.Extensions;
 using SchneiderElectric.Minefield.Host.Field;
+using Microsoft.Extensions.Configuration;
 
-class Program
+static class Program
 {
     static void Main(string[] args)
     {
-        var boardSize = 8;
+        var initialValues = ReadConfiguration();
 
         var services = new ServiceCollection();
-        var serviceProvider = services.Initialize(boardSize);
+        var serviceProvider = services.Initialize(
+            initialValues.BoardSize,
+            initialValues.NumberOfMines);
 
         var board = serviceProvider.GetRequiredService<IBoard>();
 
@@ -34,6 +39,19 @@ class Program
 
 
         Console.ReadKey();
+    }
+
+    static (int BoardSize, int NumberOfMines) ReadConfiguration()
+    {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false)
+            .Build();
+
+        var boardSize = configuration.GetValue<int>("GameSettings:BoardSize");
+        var numberOfMines = configuration.GetValue<int>("GameSettings:NumberOfMines");
+
+        return (boardSize, numberOfMines);
     }
 
     static Direction GetDirection(ConsoleKey key) => key switch

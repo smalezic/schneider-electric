@@ -6,7 +6,7 @@ using Xunit;
 
 public class PlayerTests
 {
-    private Fixture _fixture = new();
+    private readonly Fixture _fixture = new();
 
     [Fact]
     public void InitPlayer_Success()

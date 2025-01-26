@@ -16,7 +16,7 @@ public class BoardTests
         var renderer = new Mock<IBoardRenderer>();
 
         // Act
-        var board = Board.Create(renderer.Object, 8);
+        var board = Board.Create(renderer.Object, 8, 10);
 
         // Assert
         Assert.NotNull(board);
@@ -28,7 +28,7 @@ public class BoardTests
         // Arrange
 
         // Act
-        var func = () => Board.Create(null!, 8);
+        var func = () => Board.Create(null!, 8, 10);
 
         // Assert
         Assert.Throws<ArgumentNullException>(func);
@@ -39,13 +39,29 @@ public class BoardTests
     [InlineData(0)]
     [InlineData(3)]
     [InlineData(10)]
-    public void CreateBoard_TooSmallOrTooBig_Fail(int size)
+    public void CreateBoard_SizeIsTooSmallOrTooBig_Fail(int size)
     {
         // Arrange
         var renderer = new Mock<IBoardRenderer>();
 
         // Act
-        var func = () => Board.Create(renderer.Object, size);
+        var func = () => Board.Create(renderer.Object, size, 10);
+
+        // Assert
+        Assert.Throws<ArgumentOutOfRangeException>(func);
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(0)]
+    [InlineData(40)]
+    public void CreateBoard_NumberOfMinesIsTooSmallOrTooBig_Fail(int numberOfMines)
+    {
+        // Arrange
+        var renderer = new Mock<IBoardRenderer>();
+
+        // Act
+        var func = () => Board.Create(renderer.Object, 8, numberOfMines);
 
         // Assert
         Assert.Throws<ArgumentOutOfRangeException>(func);
@@ -57,7 +73,7 @@ public class BoardTests
         // Arrange
         var renderer = new Mock<IBoardRenderer>(MockBehavior.Strict);
         renderer.Setup(it => it.DisplayBoard(It.IsAny<Player>(), 8));
-        var board = Board.Create(renderer.Object, 8);
+        var board = Board.Create(renderer.Object, 8, 10);
 
         // Act
         board.Display();
@@ -71,7 +87,7 @@ public class BoardTests
     {
         // Arrange
         var renderer = new Mock<IBoardRenderer>();
-        var board = Board.Create(renderer.Object, 8);
+        var board = Board.Create(renderer.Object, 8, 10);
 
         // Act
         var fieldInfo = board
@@ -89,7 +105,7 @@ public class BoardTests
     {
         // Arrange
         var renderer = new Mock<IBoardRenderer>();
-        var board = Board.Create(renderer.Object, 8);
+        var board = Board.Create(renderer.Object, 8, 10);
 
         var mineField = board.GetType().GetField("<Mines>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance);
         var mines = (List<Mine>)mineField!.GetValue(board)!;

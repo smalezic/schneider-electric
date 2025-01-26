@@ -38,9 +38,9 @@ namespace SchneiderElectric.Minefield.Host.Presentation
 
         public void DisplayMessage(string message)
         {
-            Console.WriteLine("\n\n**********************");
+            Console.WriteLine("\n\n************************");
             Console.WriteLine(message);
-            Console.WriteLine("**********************");
+            Console.WriteLine("************************");
         }
     }
 }
